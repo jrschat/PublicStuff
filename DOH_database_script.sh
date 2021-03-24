@@ -2,13 +2,19 @@
 
 mkdir -p /home/pi/DOH/sqlite3/
 
+cd /home/pi/DOH/sqlite3
+
 curl -L --output /home/pi/DOH/sqlite3/DOH.db https://github.com/jpgpi250/piholemanual/blob/master/DOH.db?raw=true
 
 sqlite3 /home/pi/DOH/sqlite3/DOH.db \
-"select DISTINCT domain from 'domainlist';" > /home/pi/DOH/sqlite3/DOH.txt
+"select DISTINCT domain from 'domainlist' \
+where domainlist.timestamp = \
+(select value from info where property = 'latest_timestamp');" > /home/pi/DOH/sqlite3/DOH.txt
 
 sqlite3 /home/pi/DOH/sqlite3/DOH.db \
-"select DISTINCT cname_domain from 'cnameinfo';" >> /home/pi/DOH/sqlite3/DOH.txt
+"select DISTINCT cname_domain from 'cnameinfo' \
+where cnameinfo.timestamp = \
+(select value from info where property = 'latest_timestamp');" >> /home/pi/DOH/sqlite3/DOH.txt
 
 dig -f /home/pi/DOH/sqlite3/DOH.txt +tries=2 +time=10 @192.168.0.8 -p 53 +short > /home/pi/DOH/sqlite3/DOHdig.txt
 
