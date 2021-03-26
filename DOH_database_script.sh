@@ -6,7 +6,7 @@ C_RED='\e[1;31m'
 C_GREEN='\e[1;32m'
 
 # Determing location for script to output files
-if [ "$1" != string ]
+if [ -z "$1" ]
 	then
 		if whiptail --title "Output Folder" --yesno "Do you want the IP List to output in the current location" "${r}" "${c}";
 			then
