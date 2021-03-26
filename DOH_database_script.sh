@@ -43,7 +43,7 @@ echo "DOH.txt ${C_GREEN}appened${C_NONE}"
 dig -f DOH.txt +tries=2 +time=5 @192.168.0.8 -p 53 +short > DOHdig.txt
 echo "DOHdig.txt ${C_GREEN}completed${C_NONE}"
 # Strip output of dig to just IPs and output to file
-egrep '(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])' DOHdig.txt > DOHips.txt
+grep -E '(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])' DOHdig.txt > DOHips.txt
 echo "DOHips.txt ${C_GREEN}created${C_NONE}"
 # Sort list of IPs and output to file
 sort -o DOHsort.txt DOHips.txt
@@ -52,7 +52,7 @@ echo "DOHsort.txt ${C_GREEN}created${C_NONE}"
 uniq DOHsort.txt DOHdup.txt
 echo "DOHdup.txt ${C_GREEN}created${C_NONE}"
 # Remove any IPs that begin with 0.* and output to file
-egrep -v '^0\..{0,11}$' DOHdup.txt > DOHip4.txt
+grep -E -v '^0\..{0,11}$' DOHdup.txt > DOHip4.txt
 wc -l DOHip4.txt
 # Remove all create files except finaly list of IPs
 rm -f DOH.db
