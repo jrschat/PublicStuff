@@ -6,7 +6,7 @@ C_RED='\e[1;31m'
 C_GREEN='\e[1;32m'
 
 # Determing location for script to output files
-if [ -z "$1" ]
+if [ -z $1 ]
 	then
 		if whiptail --title "Output Folder" --yesno "Do you want the IP List to output in the current location" "${r}" "${c}";
 			then
@@ -33,14 +33,8 @@ sqlite3 DOH.db \
 where domainlist.timestamp = \
 (select value from info where property = 'latest_timestamp');" > DOH.txt
 echo "DOH.txt ${C_GREEN}created${C_NONE}"
-# Retrieve unique cnames from database that match the latest timestamp and append to previously created file
-sqlite3 DOH.db \
-"select DISTINCT cname_domain from 'cnameinfo' \
-where cnameinfo.timestamp = \
-(select value from info where property = 'latest_timestamp');" >> DOH.txt
-echo "DOH.txt ${C_GREEN}appened${C_NONE}"
 #Dig for IPs
-dig -f DOH.txt +tries=2 +time=5 @192.168.0.8 -p 53 +short > DOHdig.txt
+dig -f DOH.txt +tries=3 +time=5 @192.168.0.6 -p 53 +short > DOHdig.txt
 echo "DOHdig.txt ${C_GREEN}completed${C_NONE}"
 # Strip output of dig to just IPs and output to file
 grep -E '(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])' DOHdig.txt > DOHips.txt
