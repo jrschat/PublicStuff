@@ -1,35 +1,71 @@
 #!/bin/sh
 
-mkdir -p /home/pi/DOH/sqlite3/
+# Set Colors
+C_NONE='\e[0m'
+C_RED='\e[1;31m'
+C_GREEN='\e[1;32m'
 
-cd /home/pi/DOH/sqlite3
-
-curl -L --output /home/pi/DOH/sqlite3/DOH.db https://github.com/jpgpi250/piholemanual/blob/master/DOH.db?raw=true
-
-sqlite3 /home/pi/DOH/sqlite3/DOH.db \
+# Determing location for script to output files
+if [ "$1" != string ]
+	then
+		if whiptail --title "Output Folder" --yesno "Do you want the IP List to output in the current location" "${r}" "${c}";
+			then
+			whiptail --msgbox --title "Output Folder" "Outputting to current location" "${r}" "${c}"
+			else
+			folderlocation=$(whiptail --title "Set Output Folder" --inputbox "Please set an output location for the IP List." "${r}" "${c}" "${folderlocation}" 3>&1 1>&2 2>&3) || \
+			{ echo "${C_RED}Cancel was selected, exiting script${C_NONE}"; exit 1; }
+			printf "The output folder location will be: ${C_GREEN}%s${C_NONE}"\\n "${folderlocation}"
+		fi
+	else
+		folderlocation="$1"
+fi
+# Create and set directory for file file creation
+if [ -n "$folderlocation" ]
+	then
+		mkdir -p $folderlocation && cd $folderlocation
+fi
+# Fetch database from github
+curl -L --output DOH.db https://github.com/jpgpi250/piholemanual/blob/master/DOH.db?raw=true
+echo "DOH.db ${C_GREEN}retrieved${C_NONE}"
+# Retrieve unique domains from database that match the latest timestamp and output to file
+sqlite3 DOH.db \
 "select DISTINCT domain from 'domainlist' \
 where domainlist.timestamp = \
-(select value from info where property = 'latest_timestamp');" > /home/pi/DOH/sqlite3/DOH.txt
-
-sqlite3 /home/pi/DOH/sqlite3/DOH.db \
+(select value from info where property = 'latest_timestamp');" > DOH.txt
+echo "DOH.txt ${C_GREEN}created${C_NONE}"
+# Retrieve unique cnames from database that match the latest timestamp and append to previously created file
+sqlite3 DOH.db \
 "select DISTINCT cname_domain from 'cnameinfo' \
 where cnameinfo.timestamp = \
-(select value from info where property = 'latest_timestamp');" >> /home/pi/DOH/sqlite3/DOH.txt
-
-dig -f /home/pi/DOH/sqlite3/DOH.txt +tries=2 +time=10 @192.168.0.8 -p 53 +short > /home/pi/DOH/sqlite3/DOHdig.txt
-
-egrep '(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])' /home/pi/DOH/sqlite3/DOHdig.txt > /home/pi/DOH/sqlite3/DOHips.txt
-
-sort -o /home/pi/DOH/sqlite3/DOHsort.txt /home/pi/DOH/sqlite3/DOHips.txt
-
-uniq /home/pi/DOH/sqlite3/DOHsort.txt /home/pi/DOH/sqlite3/DOHdup.txt
-
-egrep -v '^0\..{0,11}$' /home/pi/DOH/sqlite3/DOHdup.txt > /home/pi/DOH/sqlite3/DOHip4.txt
-
-rm -f /home/pi/DOH/sqlite3/DOH.db
-rm -f /home/pi/DOH/sqlite3/DOH.txt
-rm -f /home/pi/DOH/sqlite3/DOHdig.txt
-rm -f /home/pi/DOH/sqlite3/DOHips.txt
-rm -f /home/pi/DOH/sqlite3/DOHvips.txt
-rm -f /home/pi/DOH/sqlite3/DOHsort.txt
-rm -f /home/pi/DOH/sqlite3/DOHdup.txt
+(select value from info where property = 'latest_timestamp');" >> DOH.txt
+echo "DOH.txt ${C_GREEN}appened${C_NONE}"
+#Dig for IPs
+dig -f DOH.txt +tries=2 +time=5 @192.168.0.8 -p 53 +short > DOHdig.txt
+echo "DOHdig.txt ${C_GREEN}completed${C_NONE}"
+# Strip output of dig to just IPs and output to file
+egrep '(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])' DOHdig.txt > DOHips.txt
+echo "DOHips.txt ${C_GREEN}created${C_NONE}"
+# Sort list of IPs and output to file
+sort -o DOHsort.txt DOHips.txt
+echo "DOHsort.txt ${C_GREEN}created${C_NONE}"
+# Output only unique IPs to file
+uniq DOHsort.txt DOHdup.txt
+echo "DOHdup.txt ${C_GREEN}created${C_NONE}"
+# Remove any IPs that begin with 0.* and output to file
+egrep -v '^0\..{0,11}$' DOHdup.txt > DOHip4.txt
+wc -l DOHip4.txt
+# Remove all create files except finaly list of IPs
+rm -f DOH.db
+echo "DOH.db ${C_GREEN}removed${C_NONE}"
+rm -f DOH.txt
+echo "DOH.txt ${C_GREEN}removed${C_NONE}"
+rm -f DOHdig.txt
+echo "DOHdig.txt ${C_GREEN}removed${C_NONE}"
+rm -f DOHips.txt
+echo "DOHips.txt ${C_GREEN}removed${C_NONE}"
+rm -f DOHvips.txt
+echo "DOHvips.txt ${C_GREEN}removed${C_NONE}"
+rm -f DOHsort.txt
+echo "DOHsort.txt ${C_GREEN}removed${C_NONE}"
+rm -f DOHdup.txt
+echo "DOHdup.txt ${C_GREEN}removed${C_NONE}"
