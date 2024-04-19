@@ -24,15 +24,17 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
+        with:
+        ref: ${{ github.head_ref }}
 
-      # Runs a single command using the runners shell
-      - name: execute script
-        run: sudo rm -f /DOHip4.txt 
-      - run: sudo mkdir /temp
-      - run: sudo sh DOH_database_script.sh /temp
-      - run: sudo mv /temp/DOHip4.txt ~/DOHip4.txt
-      - run: cat DOHip4.txt
-      - run: sudo rm -rf /temp
+      - run: |
+          sudo rm -f /DOHip4.txt
+          ls /
+          sudo mkdir /temp
+          sudo sh DOH_database_script.sh /temp
+          sudo mv /temp/DOHip4.txt ~/DOHip4.txt
+          sudo rm -rf /temp
+          ls /
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update IP List
