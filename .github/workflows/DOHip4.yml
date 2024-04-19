@@ -22,15 +22,15 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
-      - run: |
-          #sudo rm -f DOHip4.txt
-          #ls
+      - name: Generate New List
+        run: |
+          sudo rm -f DOHip4.txt
           sudo mkdir temp
           sudo sh DOH_database_script.sh temp
           sudo mv temp/DOHip4.txt DOHip4.txt
           sudo rm -rf temp
-          #ls
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Commit New List
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update IP List
           #commit_options: '--no-verify --signoff'
