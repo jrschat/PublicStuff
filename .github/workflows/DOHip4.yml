@@ -29,12 +29,12 @@ jobs:
 
       - run: |
           sudo rm -f /DOHip4.txt
-          ls /
+          ls
           sudo mkdir /temp
           sudo sh DOH_database_script.sh /temp
           sudo mv /temp/DOHip4.txt ~/DOHip4.txt
           sudo rm -rf /temp
-          ls /
+          ls
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update IP List
