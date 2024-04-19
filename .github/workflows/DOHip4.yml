@@ -27,5 +27,4 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: execute script
-        #run: sudo sh DOH_database_script.sh
-        run: ls
+        run: sh DOH_database_script.sh
