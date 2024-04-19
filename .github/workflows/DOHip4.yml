@@ -30,4 +30,4 @@ jobs:
         run: sudo mkdir /temp
       - run: sudo sh DOH_database_script.sh /temp
       - run: sudo mv /temp/DOHip4.txt ~/DOHip4.txt
-      - run: sudo rm /temp
+      - run: sudo rm -rf /temp
