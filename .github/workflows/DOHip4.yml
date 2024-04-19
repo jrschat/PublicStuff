@@ -27,6 +27,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: execute script
-        run: sh DOH_database_script.sh /temp
+        run: mkdir /temp
+      - run: sh DOH_database_script.sh /temp
       - run: mv /temp/DOHip4.txt ~/DOHip4.txt
       - run: rm /temp
