@@ -30,6 +30,7 @@ jobs:
         run: sudo mkdir /temp
       - run: sudo sh DOH_database_script.sh /temp
       - run: sudo mv /temp/DOHip4.txt ~/DOHip4.txt
+      - run: cat DOHip4.txt
       - run: sudo rm -rf /temp
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
