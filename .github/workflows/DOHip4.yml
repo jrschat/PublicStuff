@@ -4,13 +4,8 @@ name: DOHip4
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
-  #push:
-  #  branches: [ "master" ]
- # pull_request:
-  #  branches: [ "master" ]
-
-  # Allows you to run this workflow manually from the Actions tab
+  schedule:
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -28,14 +23,14 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - run: |
-          sudo rm -f DOHip4.txt
-          ls
+          #sudo rm -f DOHip4.txt
+          #ls
           sudo mkdir temp
           sudo sh DOH_database_script.sh temp
           sudo mv temp/DOHip4.txt DOHip4.txt
           sudo rm -rf temp
-          ls
+          #ls
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Update IP List
-          commit_options: '--no-verify --signoff'
+          #commit_options: '--no-verify --signoff'
