@@ -31,7 +31,7 @@ jobs:
           sudo rm -f DOHip4.txt
           ls
           sudo mkdir temp
-          sudo sh DOH_database_script.sh /temp
+          sudo sh DOH_database_script.sh temp
           sudo mv temp/DOHip4.txt DOHip4.txt
           sudo rm -rf temp
           ls
