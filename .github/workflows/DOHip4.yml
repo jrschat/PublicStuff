@@ -27,7 +27,8 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: execute script
-        run: sudo mkdir /temp
+        run: sudo rm -f /DOHip4.txt 
+      - run: sudo mkdir /temp
       - run: sudo sh DOH_database_script.sh /temp
       - run: sudo mv /temp/DOHip4.txt ~/DOHip4.txt
       - run: cat DOHip4.txt
