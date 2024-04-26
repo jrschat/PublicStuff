@@ -21,6 +21,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+      - name: Install Unbound
+        run: |
+          sudo apt update
+          sudo apt install unbound -y
+          sudo cp unbound-actions.conf /etc/unbound/unbound.conf.d/unbound-actions.conf
+          sudo service unbound restart
+          dig pi-hole.net @127.0.0.1 -p 5335
 
       - name: Generate New List
         run: |
