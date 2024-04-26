@@ -25,6 +25,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install unbound -y
+          ls
           sudo cp unbound-actions.conf /etc/unbound/unbound.conf.d/unbound-actions.conf
           sudo service unbound restart
           dig pi-hole.net @127.0.0.1 -p 5335
