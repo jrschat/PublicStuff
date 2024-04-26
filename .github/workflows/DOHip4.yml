@@ -21,7 +21,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
-
+      - name: Install Unbound
+        run: |
+          sudo apt update
+          sudo apt install unbound -y
+          sudo cp .github/workflows/unbound-actions.conf /etc/unbound/unbound.conf.d/unbound-actions.conf
+          sudo service unbound restart
       - name: Generate New List
         run: |
           sudo rm -f DOHip4.txt
