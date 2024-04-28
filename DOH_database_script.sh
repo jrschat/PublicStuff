@@ -38,7 +38,7 @@ dig -f DOH.txt +tries=3 +time=10 @127.0.0.1 -p 5335 +short > DOHdig.txt
 #dig -f DOH.txt +tries=3 +time=10 +short > DOHdig.txt
 echo "DOHdig.txt ${C_GREEN}completed${C_NONE}"
 # Strip output of dig to just IPs and output to file
-grep -E '(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])' DOHdig.txt > DOHips.txt
+grep -E '^(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])' DOHdig.txt > DOHips.txt
 echo "DOHips.txt ${C_GREEN}created${C_NONE}"
 # Sort list of IPs and output to file
 sort -o DOHsort.txt DOHips.txt
