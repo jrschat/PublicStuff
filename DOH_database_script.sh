@@ -25,7 +25,7 @@ if [ -n "$folderlocation" ]
 		mkdir -p $folderlocation && cd $folderlocation
 fi
 # Fetch database from github
-curl -L --output DOH.db https://github.com/jpgpi250/piholemanual/blob/master/DOH.db?raw=true
+curl -L --output DOH.db https://github.com/jpgpi250/piholemanual/blob/master/DOH/DOH.db?raw=true
 echo "DOH.db ${C_GREEN}retrieved${C_NONE}"
 # Retrieve unique domains from database that match the latest timestamp and output to file
 sqlite3 DOH.db \
